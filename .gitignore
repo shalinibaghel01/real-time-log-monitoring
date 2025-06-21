@@ -1,0 +1,7 @@
+__pycache__/
+*.zip
+*.pem
+*.tfstate
+*.tfstate.*
+.terraform/
+inventory
