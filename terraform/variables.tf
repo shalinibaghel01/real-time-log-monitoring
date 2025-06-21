@@ -12,6 +12,7 @@ variable "db_username" {
 
 variable "db_password" {
   default = "admin12345"
+  sensitive = true
 }
 
 variable "db_name" {
@@ -20,5 +21,5 @@ variable "db_name" {
 
 variable "key_name" {
   description = "EC2 key pair name"
-  default     = "aws-key"  # 🔁 Replace with actual key pair name
+  default     = "awskey"  # 🔁 Replace with actual key pair name
 }

@@ -1,0 +1,33 @@
+- name: Setup Prometheus and Grafana on EC2
+  hosts: grafana
+  become: true
+
+  tasks:
+
+    - name: Update all packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Install Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Start and enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Pull Prometheus Docker image
+      shell: docker pull prom/prometheus
+
+    - name: Pull Grafana Docker image
+      shell: docker pull grafana/grafana
+
+    - name: Run Prometheus container
+      shell: docker run -d --name prometheus -p 9090:9090 prom/prometheus
+
+    - name: Run Grafana container
+      shell: docker run -d --name grafana -p 3000:3000 grafana/grafana

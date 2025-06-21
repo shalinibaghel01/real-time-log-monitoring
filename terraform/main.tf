@@ -40,6 +40,38 @@ resource "aws_iam_role" "lambda_exec_role" {
   })
 }
 
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "${path.module}/lambda_function.py"
+  output_path = "${path.module}/lambda_function.zip"
+}
+
+resource "aws_lambda_function" "log_processor" {
+  filename         = data.archive_file.lambda_zip.output_path
+  function_name    = "log-processor-fn"
+  role             = aws_iam_role.lambda_exec_role.arn
+  handler          = "lambda_function.lambda_handler"
+  runtime          = "python3.9"
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  timeout          = 10
+}
+
+resource "aws_cloudwatch_log_subscription_filter" "log_filter" {
+  name            = "lambda-log-trigger"
+  log_group_name  = aws_cloudwatch_log_group.log_group.name
+  filter_pattern  = ""
+  destination_arn = aws_lambda_function.log_processor.arn
+  depends_on      = [aws_lambda_function.log_processor]
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.log_processor.function_name
+  principal     = "logs.amazonaws.com"
+  source_arn    = aws_cloudwatch_log_group.log_group.arn
+}
+
 resource "aws_iam_role_policy_attachment" "lambda_logs_policy" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"

@@ -1,0 +1,121 @@
+🔧 1. Git Commands
+
+# Initialize Git Repository
+git init
+
+# Add files
+git add .
+
+# Commit changes
+git commit -m "Initial commit"
+
+# Add remote and push to GitHub
+git remote add origin https://github.com/username/repo.git
+git branch -M main
+git push -u origin main
+
+
+🌍 2. Terraform Commands
+
+# Initialize Terraform
+tf init
+
+# Validate syntax
+tf validate
+
+# Format files
+tf fmt
+
+# Plan infrastructure
+tf plan
+
+# Apply infrastructure
+tf apply -auto-approve
+
+# Destroy infrastructure
+tf destroy -auto-approve
+
+
+⚙️ 3. Ansible Commands
+
+# Check Ansible version
+ansible --version
+
+# Ping hosts
+ansible all -i inventory -m ping
+
+# Run playbook
+ansible-playbook -i inventory setup-monitoring.yml
+
+
+🐳 4. Docker Commands (on EC2 via Ansible)
+
+# Pull Prometheus image
+docker pull prom/prometheus
+
+# Pull Grafana image
+docker pull grafana/grafana
+
+# Run Prometheus container
+docker run -d --name prometheus -p 9090:9090 prom/prometheus
+
+# Run Grafana container
+docker run -d --name grafana -p 3000:3000 grafana/Grafana
+
+
+📊 5. Prometheus & Grafana Setup (via Docker)
+
+# Access Prometheus UI
+http://<EC2-Public-IP>:9090
+
+# Access Grafana UI
+http://<EC2-Public-IP>:3000
+# Default username: admin
+# Default password: admin
+
+# Import dashboard from JSON
+# Use Grafana UI > Dashboard > Import
+
+
+☁️ 6. AWS CLI Commands
+# Configure AWS CLI
+aws configure
+
+# Verify IAM identity
+aws sts get-caller-identity
+
+# Create S3 Bucket (optional)
+aws s3 mb s3://your-bucket-name
+
+# Check logs
+aws logs describe-log-groups
+aws logs describe-log-streams --log-group-name "/app/logs"
+
+# Put log event
+aws logs put-log-events \
+  --log-group-name "/app/logs" \
+  --log-stream-name "lambda-stream" \
+  --log-events timestamp=$(date +%s000),message="CRITICAL: Example error log" \
+  --sequence-token <paste-token>
+
+
+📁 7. File Management Commands (Linux)
+
+# File permission for SSH keys
+chmod 400 ~/.ssh/awskey.pem
+
+# SCP key from local to EC2
+scp -i terraform-key.pem awskey.pem ec2-user@<EC2-IP>:/home/ec2-user/.ssh/
+
+# SSH into EC2
+ssh -i ~/.ssh/awskey.pem ec2-user@<EC2-IP>
+
+
+
+🧪 8. MySQL (RDS) Access
+# Access MySQL remotely
+mysql -h <RDS-endpoint> -u admin -p
+
+# Use DB and check logs
+USE logdb;
+SELECT * FROM logs;
